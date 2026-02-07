@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police and Thieves - Role Play</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tone.js for subtle sound effects (optional but adds immersion) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        /* Custom Atmosphere & Animations - Cyberpunk/Crime Noir */
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #0a0e27;
+            overflow: hidden;
+            color: #e2e8f0;
+        }
+
+        h1, h2, h3, .display-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Background Ambience - City at Night */
+        .bg-ambience {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+                linear-gradient(to bottom, #0f172a 0%, #020617 100%);
+            z-index: -2;
+        }
+
+        /* Police siren effect */
+        .siren-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: siren-blue 4s infinite alternate;
+            z-index: -1;
+        }
+
+        .siren-glow::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 0;
+            right: -300px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: siren-red 4s infinite alternate;
+        }
+
+        @keyframes siren-blue {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes siren-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Rain effect */
+        .rain-drop {
+            position: absolute;
+            width: 1px;
+            height: 20px;
+            background: linear-gradient(to bottom, transparent, rgba(147, 197, 253, 0.3));
+            animation: rain 1s infinite linear;
+        }
+        .rain-drop:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 0.8s; }
+        .rain-drop:nth-child(2) { left: 25%; animation-delay: 0.2s; animation-duration: 1s; }
+        .rain-drop:nth-child(3) { left: 40%; animation-delay: 0.4s; animation-duration: 0.9s; }
+        .rain-drop:nth-child(4) { left: 55%; animation-delay: 0.6s; animation-duration: 1.1s; }
+        .rain-drop:nth-child(5) { left: 70%; animation-delay: 0.8s; animation-duration: 0.7s; }
+        .rain-drop:nth-child(6) { left: 85%; animation-delay: 0.3s; animation-duration: 0.95s; }
+
+        @keyframes rain {
+            0% { transform: translateY(-100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        /* Glassmorphism - Tech/Noir style */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 
+                0 0 40px rgba(59, 130, 246, 0.1),
+                0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Transitions */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-exit {
+            opacity: 1;
+            transition: opacity 0.4s ease-in;
+        }
+        .fade-exit-active {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Blackout Transition - Deep alley */
+        #blackout-curtain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #020617 0%, #000000 100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #blackout-curtain.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Button Styles - Police/Alert style */
+        .btn-elegant {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #dbeafe;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        .btn-elegant:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.2);
+            border-color: rgba(96, 165, 250, 0.8);
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        }
+        .btn-elegant:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #94a3b8;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(148, 163, 184, 0.5);
+            color: #cbd5e1;
+        }
+
+        /* Card Styles - Tech cards */
+        .info-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+        }
+        .info-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 
+                0 0 30px rgba(59, 130, 246, 0.2),
+                0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .info-card.viewed {
+            border-left: 4px solid #3b82f6;
+            background: rgba(30, 58, 138, 0.3);
+        }
+        .check-mark {
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        .viewed .check-mark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.3;
+        }
+
+        /* Typewriter Cursor */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Reward Glow */
+        .reward-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Text colors */
+        .text-primary { color: #e2e8f0; }
+        .text-accent { color: #60a5fa; }
+        .text-subtle { color: #94a3b8; }
+
+        /* Glitch effect on hover for title */
+        .glitch-hover:hover {
+            animation: glitch 0.3s infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center">
+
+    <!-- Scanlines overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Background Elements -->
+    <div class="bg-ambience"></div>
+    <div class="siren-glow"></div>
+    <div class="rain-drop"></div>
+    <div class="rain-drop"></div>
+    <div class="rain-drop"></div>
+    <div class="rain-drop"></div>
+    <div class="rain-drop"></div>
+    <div class="rain-drop"></div>
+
+    <!-- Blackout Curtain for Game Start -->
+    <div id="blackout-curtain">
+        <div id="action-container" class="hidden text-center max-w-2xl px-6">
+            <p class="display-font text-2xl md:text-4xl text-blue-100 italic mb-8 leading-relaxed tracking-wide" id="action-text"></p>
+            <button id="action-btn" class="btn-elegant px-8 py-3 rounded font-bold text-lg opacity-0 transition-opacity duration-1000">
+                继续 (ACTION)
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="w-full max-w-5xl h-full md:h-auto p-4 md:p-8 flex flex-col items-center justify-center relative z-10">
+        
+        <!-- 1. Theme Intro Modal -->
+        <div id="theme-modal" class="glass-panel rounded-lg p-8 md:p-12 max-w-2xl w-full text-center fade-enter-active relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-purple-500 to-red-500 opacity-70"></div>
+            
+            <div class="mb-2 text-xs text-blue-400 tracking-[0.3em] uppercase">Case File #0927</div>
+            <h1 class="text-4xl md:text-6xl text-blue-400 mb-2 tracking-widest display-font glitch-hover cursor-default">POLICE</h1>
+            <h2 class="text-3xl md:text-5xl text-red-500/80 mb-8 display-font tracking-widest">& THIEVES</h2>
+            
+            <div class="w-24 h-0.5 bg-gradient-to-r from-blue-600 to-red-500 mx-auto mb-8 opacity-50"></div>
+            
+            <p class="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed font-light">
+                这是一个关于<span class="text-blue-400 font-semibold">追逐</span>、<span class="text-red-400 font-semibold">对抗</span>与<span class="text-purple-400 font-semibold">禁忌吸引</span>的夜晚。<br>
+                在这个游戏中，你们将扮演警察与盗贼，在雨夜的都市迷宫里，猎人与猎物的界限逐渐模糊。
+            </p>
+            
+            <button onclick="confirmTheme()" class="btn-elegant px-10 py-4 text-lg font-bold shadow-lg clip-path-slant">
+                接受任务 / ACCEPT MISSION
+            </button>
+        </div>
+
+        <!-- 2. Main Dashboard (Hidden Initially) -->
+        <div id="main-dashboard" class="hidden w-full flex-col items-center fade-enter">
+            
+            <header class="text-center mb-10">
+                <div class="text-xs text-blue-400 tracking-[0.3em] uppercase mb-2">Confidential</div>
+                <h2 class="text-3xl text-blue-300 display-font mb-2 tracking-wider">任务简报</h2>
+                <p class="text-slate-500 text-sm tracking-widest uppercase">查阅以下情报以开始行动</p>
+            </header>
+
+            <!-- Three Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
+                
+                <!-- Card 1: Rules -->
+                <div id="card-rules" class="info-card glass-panel rounded-lg p-6 flex flex-col items-center text-center cursor-pointer group" onclick="openModal('rules')">
+                    <div class="w-16 h-16 rounded bg-blue-900/30 flex items-center justify-center mb-4 group-hover:bg-blue-800/40 transition-colors relative border border-blue-700/30">
+                        <span class="text-3xl">⚖️</span>
+                        <div class="check-mark absolute -top-2 -right-2 bg-blue-500 rounded w-6 h-6 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_10px_rgba(59,130,246,0.5)]">✓</div>
+                    </div>
+                    <h3 class="text-xl text-blue-200 mb-2 group-hover:text-blue-100 font-semibold tracking-wide">执法守则</h3>
+                    <p class="text-sm text-slate-400">查看行动规范与安全词</p>
+                    <button class="mt-4 text-xs text-blue-400 uppercase tracking-widest border-b border-transparent group-hover:border-blue-400 transition-all">查看详情</button>
+                </div>
+
+                <!-- Card 2: Script -->
+                <div id="card-script" class="info-card glass-panel rounded-lg p-6 flex flex-col items-center text-center cursor-pointer group" onclick="openModal('script')">
+                    <div class="w-16 h-16 rounded bg-purple-900/30 flex items-center justify-center mb-4 group-hover:bg-purple-800/40 transition-colors relative border border-purple-700/30">
+                        <span class="text-3xl">🎭</span>
+                        <div class="check-mark absolute -top-2 -right-2 bg-blue-500 rounded w-6 h-6 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_10px_rgba(59,130,246,0.5)]">✓</div>
+                    </div>
+                    <h3 class="text-xl text-blue-200 mb-2 group-hover:text-blue-100 font-semibold tracking-wide">人物档案</h3>
+                    <p class="text-sm text-slate-400">了解角色设定与任务背景</p>
+                    <button class="mt-4 text-xs text-purple-400 uppercase tracking-widest border-b border-transparent group-hover:border-purple-400 transition-all">查看详情</button>
+                </div>
+
+                <!-- Card 3: Notes -->
+                <div id="card-notes" class="info-card glass-panel rounded-lg p-6 flex flex-col items-center text-center cursor-pointer group" onclick="openModal('notes')">
+                    <div class="w-16 h-16 rounded bg-red-900/30 flex items-center justify-center mb-4 group-hover:bg-red-800/40 transition-colors relative border border-red-700/30">
+                        <span class="text-3xl">⚠️</span>
+                        <div class="check-mark absolute -top-2 -right-2 bg-blue-500 rounded w-6 h-6 flex items-center justify-center text-xs font-bold text-white shadow-[0_0_10px_rgba(59,130,246,0.5)]">✓</div>
+                    </div>
+                    <h3 class="text-xl text-blue-200 mb-2 group-hover:text-blue-100 font-semibold tracking-wide">风险评估</h3>
+                    <p class="text-sm text-slate-400">确认装备与应急预案</p>
+                    <button class="mt-4 text-xs text-red-400 uppercase tracking-widest border-b border-transparent group-hover:border-red-400 transition-all">查看详情</button>
+                </div>
+            </div>
+
+            <!-- Start Game Button (Initially Hidden) -->
+            <div id="start-game-container" class="opacity-0 pointer-events-none transition-all duration-1000 transform translate-y-10">
+                <div class="h-px w-64 bg-gradient-to-r from-transparent via-blue-600 to-transparent mx-auto mb-6 opacity-50"></div>
+                <button onclick="startGameSequence()" class="btn-elegant px-12 py-4 text-xl font-bold shadow-[0_0_40px_rgba(59,130,246,0.3)] animate-pulse tracking-widest">
+                    开始行动 / INITIATE
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Info Detail Modal (Reusable) -->
+    <div id="info-modal" class="fixed inset-0 z-40 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-md opacity-0 transition-opacity duration-300">
+        <div class="glass-panel rounded-lg max-w-lg w-full p-8 relative transform scale-95 transition-transform duration-300 shadow-[0_0_50px_rgba(59,130,246,0.2)] border-blue-500/30" id="info-modal-content">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-500 hover:text-blue-400 text-2xl transition-colors">&times;</button>
+            
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span class="text-xs text-blue-400 tracking-widest uppercase">Classified</span>
+            </div>
+            
+            <h3 id="modal-title" class="text-2xl text-blue-300 display-font mb-6 pb-4 border-b border-blue-800/50 tracking-wide"></h3>
+            
+            <div id="modal-body" class="text-slate-300 leading-relaxed space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar text-sm md:text-base">
+                <!-- Content injected via JS -->
+            </div>
+            
+            <div class="mt-8 pt-4 border-t border-blue-800/50 flex justify-end">
+                <button onclick="confirmRead()" class="btn-elegant px-6 py-2 text-sm font-bold tracking-wider">
+                    确认 / CONFIRM
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Confirmation & Reward Modal (Inside Blackout) -->
+    <div id="final-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel rounded-lg max-w-md w-full p-8 text-center border-blue-500/30 shadow-[0_0_60px_rgba(59,130,246,0.2)]">
+            <div class="text-xs text-red-500 tracking-widest uppercase mb-2">Critical Decision</div>
+            <h3 class="text-2xl text-blue-300 display-font mb-4 tracking-wider">确认行动</h3>
+            <p class="text-slate-400 mb-8">你确定要执行最终逮捕/投降吗？<br>一旦确认，双方身份将彻底改变。</p>
+            
+            <div class="flex gap-4 justify-center">
+                <button onclick="cancelAction()" class="btn-secondary px-6 py-2 text-sm tracking-wider">暂缓</button>
+                <button onclick="showReward()" class="btn-elegant px-6 py-2 text-sm tracking-wider">执行</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Screen -->
+    <div id="reward-screen" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-[#020617]">
+        <div class="text-center max-w-2xl">
+            <div class="mb-6 text-blue-500 text-6xl animate-pulse">🚨</div>
+            <h2 class="text-3xl md:text-5xl text-blue-300 display-font mb-8 reward-text tracking-wider">MISSION ACCOMPLISHED</h2>
+            <div class="glass-panel p-8 rounded-lg border-blue-500/30 bg-blue-950/30 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
+                <p class="text-xs text-blue-400 uppercase tracking-widest mb-4">Evidence Seized</p>
+                <p id="reward-text-content" class="text-xl md:text-3xl text-blue-200 display-font leading-relaxed tracking-wide"></p>
+            </div>
+            <button onclick="location.reload()" class="mt-12 text-slate-600 hover:text-blue-400 text-sm tracking-widest uppercase transition-colors">重新部署 / REDEPLOY</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. CONFIGURATION AREA (Edit Content Here)
+        // ==========================================
+        const GAME_CONFIG = {
+            theme: {
+                title: "POLICE & THIEVES",
+                subtitle: "警匪游戏",
+                intro: "这是一个关于<span class='text-blue-400 font-semibold'>追逐</span>、<span class='text-red-400 font-semibold'>对抗</span>与<span class='text-purple-400 font-semibold'>禁忌吸引</span>的夜晚。<br>在这个游戏中，你们将扮演警察与盗贼，在雨夜的都市迷宫里，猎人与猎物的界限逐渐模糊。"
+            },
+            sections: {
+                rules: {
+                    title: "⚖️ 执法守则",
+                    content: `
+                        <p class="mb-3"><strong class="text-blue-300">1. 角色对立：</strong> 警察代表秩序与权威，盗贼代表自由与叛逆。双方从一开始就处于对抗状态，但对抗中暗藏吸引。</p>
+                        <p class="mb-3"><strong class="text-blue-300">2. 追逐原则：</strong> 允许适度的肢体追逐与制服/反抗，但事先约定好身体接触的界限。禁止造成真实疼痛。</p>
+                        <p class="mb-3"><strong class="text-blue-300">3. 安全词：</strong> 安全词是 <span class="text-red-500 font-bold">"OSPF"</span> 任何一方说出，游戏立即停止。</p>
+                    `
+                },
+                script: {
+                    title: "🎭 人物档案",
+                    content: `
+                        <div class="mb-4 p-4 bg-blue-900/20 rounded border-l-2 border-blue-500">
+                            <p class="text-xs text-blue-400 uppercase mb-1 tracking-wider">场景设定</p>
+                            <p>凌晨2点，废弃工厂区。暴雨，霓虹灯在积水里破碎成万花筒。这里是城市的盲区，没有监控，没有证人。</p>
+                        </div>
+                        
+                        <p class="mb-3"><strong class="text-blue-300">警察角色 (The Officer):</strong><br>你是刑侦科最年轻的督察，以冷酷高效著称。今晚你独自追踪这个盗贼三个月，终于将其逼入死角。</p>
+                        
+                        <p class="mb-3"><strong class="text-red-300">盗贼角色 (The Thief):</strong><br>他/她是都市传说中的"幽灵盗贼"，从未失手。三个月来，故意留下线索给那个执着的警察，享受被追逐的快感。今晚你本可以逃脱，却选择走进这个死胡同。</p>
+                        
+                        <div class="mt-4 p-3 bg-purple-900/20 rounded text-purple-300 text-sm italic border border-purple-700/30">
+                            "开场触发：小偷被考上了手铐，押送上了车，突然手铐开了。。。。。。。'"
+                        </div>
+                    `
+                },
+                notes: {
+                    title: "⚠️ 风险评估",
+                    content: `
+                        <ul class="list-disc pl-5 space-y-3 text-slate-300">
+                            <li><strong class="text-blue-300">道具准备：</strong> 玩具手铐</li>
+                            <li><strong class="text-blue-300">追逐安全：</strong> 要特别小心。</li>
+                            <li><strong class="text-blue-300">心理边界：</strong> 警匪主题涉及权力不对等和暴力元素，事后需要更多时间确认彼此感受，消除角色带来的紧张感。</li>
+                        </ul>
+                    `
+                }
+            },
+            action: {
+                text: "他/她的呼吸喷在你的耳廓：'督察，现在谁才是猎物？'",
+                confirmation: "你准备好接受逮捕/被逮捕了吗？",
+                reward: "<br>ysl一只<br>"
+            }
+        };
+
+        // ==========================================
+        // 2. STATE MANAGEMENT
+        // ==========================================
+        const state = {
+            rulesViewed: false,
+            scriptViewed: false,
+            notesViewed: false,
+            currentModal: null
+        };
+
+        // ==========================================
+        // 3. CORE FUNCTIONS
+        // ==========================================
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Optional: Play subtle ambient sound if user interacts first (browser policy)
+            // Tone.js logic could go here if needed, but kept simple for now.
+        });
+
+        // Step 1: Confirm Theme
+        function confirmTheme() {
+            const themeModal = document.getElementById('theme-modal');
+            const dashboard = document.getElementById('main-dashboard');
+            
+            // Fade out theme modal
+            themeModal.classList.remove('fade-enter-active');
+            themeModal.classList.add('fade-exit-active');
+            
+            setTimeout(() => {
+                themeModal.style.display = 'none';
+                dashboard.classList.remove('hidden');
+                // Trigger reflow
+                void dashboard.offsetWidth; 
+                dashboard.classList.add('fade-enter-active');
+            }, 400);
+        }
+
+        // Step 2: Open Info Modal
+        function openModal(type) {
+            state.currentModal = type;
+            const modal = document.getElementById('info-modal');
+            const content = document.getElementById('info-modal-content');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            
+            // Populate content
+            const data = GAME_CONFIG.sections[type];
+            title.innerHTML = data.title;
+            body.innerHTML = data.content;
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            // Small delay for transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Step 3: Close Info Modal
+        function closeModal() {
+            const modal = document.getElementById('info-modal');
+            const content = document.getElementById('info-modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Step 4: Confirm Read (Mark as viewed)
+        function confirmRead() {
+            const type = state.currentModal;
+            state[`${type}Viewed`] = true;
+            
+            // Update UI
+            const card = document.getElementById(`card-${type}`);
+            card.classList.add('viewed');
+            
+            closeModal();
+            checkAllViewed();
+        }
+
+        // Step 5: Check if all viewed
+        function checkAllViewed() {
+            if (state.rulesViewed && state.scriptViewed && state.notesViewed) {
+                const startBtn = document.getElementById('start-game-container');
+                startBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
+            }
+        }
+
+        // Step 6: Start Game (Blackout)
+        function startGameSequence() {
+            const curtain = document.getElementById('blackout-curtain');
+            const actionContainer = document.getElementById('action-container');
+            const actionText = document.getElementById('action-text');
+            const actionBtn = document.getElementById('action-btn');
+            
+            // Activate curtain
+            curtain.classList.add('active');
+            
+            // Prepare Action content
+            setTimeout(() => {
+                actionContainer.classList.remove('hidden');
+                
+                // Typewriter effect for Action text
+                typeWriter(GAME_CONFIG.action.text, actionText, () => {
+                    // Show button after text finishes
+                    setTimeout(() => {
+                        actionBtn.classList.remove('opacity-0');
+                    }, 500);
+                });
+                
+                // Bind Action button
+                actionBtn.onclick = showFinalConfirmation;
+                
+            }, 1500); // Wait for curtain fade
+        }
+
+        // Helper: Typewriter Effect
+        function typeWriter(text, element, callback) {
+            element.innerHTML = '';
+            let i = 0;
+            const speed = 45; // ms - slightly faster for thriller feel
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.innerHTML += '<span class="cursor-blink">|</span>';
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
+        // Step 7: Final Confirmation Modal
+        function showFinalConfirmation() {
+            const finalModal = document.getElementById('final-modal');
+            finalModal.classList.remove('hidden');
+        }
+
+        function cancelAction() {
+            const finalModal = document.getElementById('final-modal');
+            finalModal.classList.add('hidden');
+        }
+
+        // Step 8: Show Reward
+        function showReward() {
+            const finalModal = document.getElementById('final-modal');
+            const rewardScreen = document.getElementById('reward-screen');
+            const rewardContent = document.getElementById('reward-text-content');
+            
+            finalModal.classList.add('hidden');
+            
+            // Fade out curtain content
+            document.getElementById('action-container').style.transition = 'opacity 0.5s';
+            document.getElementById('action-container').style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('blackout-curtain').classList.remove('active');
+                rewardScreen.classList.remove('hidden');
+                rewardContent.innerHTML = GAME_CONFIG.action.reward;
+            }, 500);
+        }
+
+    </script>
+</body>
+</html>
