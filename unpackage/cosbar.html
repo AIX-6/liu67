@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chance Encounter at a Bar - Role Play</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tone.js for subtle sound effects (optional but adds immersion) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        /* Custom Atmosphere & Animations */
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #0f0f0f;
+            overflow: hidden; /* Prevent scrolling during game */
+        }
+
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Background Ambience */
+        .bg-ambience {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #2a1b1b 0%, #000000 100%);
+            z-index: -2;
+        }
+
+        .spotlight {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, rgba(0,0,0,0) 70%);
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: blur(40px);
+            animation: pulse-light 8s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes pulse-light {
+            0% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Transitions */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-exit {
+            opacity: 1;
+            transition: opacity 0.4s ease-in;
+        }
+        .fade-exit-active {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Blackout Transition */
+        #blackout-curtain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #blackout-curtain.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Button Styles */
+        .btn-elegant {
+            background: linear-gradient(135deg, #8B0000 0%, #500000 100%);
+            border: 1px solid rgba(255,215,0,0.3);
+            color: #ffd700;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .btn-elegant:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.6);
+            border-color: rgba(255,215,0,0.8);
+        }
+        .btn-elegant:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #e5e5e5;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        /* Card Styles */
+        .info-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .info-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255,215,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .info-card.viewed {
+            border-left: 4px solid #ffd700;
+        }
+        .check-mark {
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        .viewed .check-mark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Typewriter Cursor */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Reward Glow */
+        .reward-text {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="text-gray-200 h-screen w-screen flex items-center justify-center">
+
+    <!-- Background Elements -->
+    <div class="bg-ambience"></div>
+    <div class="spotlight"></div>
+
+    <!-- Blackout Curtain for Game Start -->
+    <div id="blackout-curtain">
+        <div id="action-container" class="hidden text-center max-w-2xl px-6">
+            <p class="serif-font text-2xl md:text-4xl text-yellow-100 italic mb-8 leading-relaxed" id="action-text"></p>
+            <button id="action-btn" class="btn-elegant px-8 py-3 rounded-full font-bold text-lg opacity-0 transition-opacity duration-1000">
+                继续 (Action)
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="w-full max-w-5xl h-full md:h-auto p-4 md:p-8 flex flex-col items-center justify-center relative z-10">
+        
+        <!-- 1. Theme Intro Modal -->
+        <div id="theme-modal" class="glass-panel rounded-2xl p-8 md:p-12 max-w-2xl w-full text-center fade-enter-active relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-600 to-transparent opacity-50"></div>
+            
+            <h1 class="text-4xl md:text-6xl text-yellow-500 mb-2 tracking-wider">Chance Encounter</h1>
+            <h2 class="text-xl md:text-2xl text-gray-400 mb-8 serif-font italic">at a Bar</h2>
+            
+            <div class="w-16 h-0.5 bg-gray-600 mx-auto mb-8"></div>
+            
+            <p class="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed font-light">
+                这是一个关于<span class="text-yellow-200">暧昧</span>、<span class="text-yellow-200">张力</span>与<span class="text-yellow-200">邂逅</span>的夜晚。<br>
+                在这个游戏中，你们将不再是熟悉的恋人，而是酒吧里刚刚目光交汇的陌生人。
+            </p>
+            
+            <button onclick="confirmTheme()" class="btn-elegant px-10 py-4 rounded-full text-lg font-bold shadow-lg">
+                我准备好了 / Enter
+            </button>
+        </div>
+
+        <!-- 2. Main Dashboard (Hidden Initially) -->
+        <div id="main-dashboard" class="hidden w-full flex-col items-center fade-enter">
+            
+            <header class="text-center mb-10">
+                <h2 class="text-3xl text-yellow-500 serif-font mb-2">今晚的剧本</h2>
+                <p class="text-gray-500 text-sm tracking-widest uppercase">请查阅以下信息以开始游戏</p>
+            </header>
+
+            <!-- Three Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
+                
+                <!-- Card 1: Rules -->
+                <div id="card-rules" class="info-card glass-panel rounded-xl p-6 flex flex-col items-center text-center cursor-pointer group" onclick="openModal('rules')">
+                    <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mb-4 group-hover:bg-gray-700 transition-colors relative">
+                        <span class="text-3xl">📜</span>
+                        <div class="check-mark absolute -top-1 -right-1 bg-yellow-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-black">✓</div>
+                    </div>
+                    <h3 class="text-xl text-gray-200 mb-2 group-hover:text-white">游戏规则</h3>
+                    <p class="text-sm text-gray-500">查看互动准则与安全词</p>
+                    <button class="mt-4 text-xs text-yellow-600 uppercase tracking-widest border-b border-transparent group-hover:border-yellow-600 transition-all">查看详情</button>
+                </div>
+
+                <!-- Card 2: Script -->
+                <div id="card-script" class="info-card glass-panel rounded-xl p-6 flex flex-col items-center text-center cursor-pointer group" onclick="openModal('script')">
+                    <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mb-4 group-hover:bg-gray-700 transition-colors relative">
+                        <span class="text-3xl">🎭</span>
+                        <div class="check-mark absolute -top-1 -right-1 bg-yellow-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-black">✓</div>
+                    </div>
+                    <h3 class="text-xl text-gray-200 mb-2 group-hover:text-white">剧情剧本</h3>
+                    <p class="text-sm text-gray-500">了解角色设定与开场背景</p>
+                    <button class="mt-4 text-xs text-yellow-600 uppercase tracking-widest border-b border-transparent group-hover:border-yellow-600 transition-all">查看详情</button>
+                </div>
+
+                <!-- Card 3: Notes -->
+                <div id="card-notes" class="info-card glass-panel rounded-xl p-6 flex flex-col items-center text-center cursor-pointer group" onclick="openModal('notes')">
+                    <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mb-4 group-hover:bg-gray-700 transition-colors relative">
+                        <span class="text-3xl">⚠️</span>
+                        <div class="check-mark absolute -top-1 -right-1 bg-yellow-600 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold text-black">✓</div>
+                    </div>
+                    <h3 class="text-xl text-gray-200 mb-2 group-hover:text-white">注意事项</h3>
+                    <p class="text-sm text-gray-500">确认环境安全与心理建设</p>
+                    <button class="mt-4 text-xs text-yellow-600 uppercase tracking-widest border-b border-transparent group-hover:border-yellow-600 transition-all">查看详情</button>
+                </div>
+            </div>
+
+            <!-- Start Game Button (Initially Hidden) -->
+            <div id="start-game-container" class="opacity-0 pointer-events-none transition-all duration-1000 transform translate-y-10">
+                <div class="h-px w-64 bg-gradient-to-r from-transparent via-yellow-900 to-transparent mx-auto mb-6"></div>
+                <button onclick="startGameSequence()" class="btn-elegant px-12 py-4 rounded-full text-xl font-bold shadow-[0_0_30px_rgba(139,0,0,0.4)] animate-pulse">
+                    开始游戏 / Start Game
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Info Detail Modal (Reusable) -->
+    <div id="info-modal" class="fixed inset-0 z-40 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="glass-panel rounded-2xl max-w-lg w-full p-8 relative transform scale-95 transition-transform duration-300" id="info-modal-content">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white text-2xl">&times;</button>
+            
+            <h3 id="modal-title" class="text-2xl text-yellow-500 serif-font mb-6 pb-4 border-b border-gray-700"></h3>
+            
+            <div id="modal-body" class="text-gray-300 leading-relaxed space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Content injected via JS -->
+            </div>
+            
+            <div class="mt-8 pt-4 border-t border-gray-700 flex justify-end">
+                <button onclick="confirmRead()" class="btn-elegant px-6 py-2 rounded-lg text-sm font-bold">
+                    确认 / Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Confirmation & Reward Modal (Inside Blackout) -->
+    <div id="final-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+        <div class="glass-panel rounded-2xl max-w-md w-full p-8 text-center border-yellow-900/50 shadow-[0_0_50px_rgba(255,215,0,0.1)]">
+            <h3 class="text-2xl text-white serif-font mb-4">确认行动</h3>
+            <p class="text-gray-400 mb-8">你确定要做出这个选择吗？<br>一旦确认，剧情将推进至下一阶段。</p>
+            
+            <div class="flex gap-4 justify-center">
+                <button onclick="cancelAction()" class="btn-secondary px-6 py-2 rounded-lg text-sm">再等等</button>
+                <button onclick="showReward()" class="btn-elegant px-6 py-2 rounded-lg text-sm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Screen -->
+    <div id="reward-screen" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-[#0a0a0a]">
+        <div class="text-center max-w-2xl">
+            <div class="mb-6 text-yellow-500 text-6xl animate-bounce">🥂</div>
+            <h2 class="text-3xl md:text-5xl text-yellow-100 serif-font mb-8 reward-text">任务完成</h2>
+            <div class="glass-panel p-8 rounded-xl border-yellow-600/30 bg-black/40">
+                <p class="text-sm text-gray-500 uppercase tracking-widest mb-4">获得奖励</p>
+                <p id="reward-text-content" class="text-xl md:text-3xl text-yellow-400 serif-font leading-relaxed"></p>
+            </div>
+            <button onclick="location.reload()" class="mt-12 text-gray-500 hover:text-white text-sm underline underline-offset-4">重新开始 / Restart</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. CONFIGURATION AREA (Edit Content Here)
+        // ==========================================
+        const GAME_CONFIG = {
+            theme: {
+                title: "Chance Encounter at a Bar",
+                subtitle: "酒吧邂逅",
+                intro: "这是一个关于<span class='text-yellow-200'>暧昧</span>、<span class='text-yellow-200'>张力</span>与<span class='text-yellow-200'>邂逅</span>的夜晚。<br>在这个游戏中，你们将不再是熟悉的恋人，而是酒吧里刚刚目光交汇的陌生人。"
+            },
+            sections: {
+                rules: {
+                    title: "📜 游戏规则",
+                    content: `
+                        <p class="mb-2"><strong class="text-white">1. 角色代入：</strong> 从进入游戏开始，请使用角色身份称呼对方，暂时放下现实生活中的身份。</p>
+                        <p><strong class="text-white">2. 沉浸体验：</strong> 在心里为自己起个名字</p>
+						<p><strong class="text-white">3. 以即兴表演为主</strong> 禁止笑场，若笑场则喝一杯</p>
+						<p><strong class="text-white">4. 安全词</strong> “OSPF” 即刻停止一切表演</p>
+                    `
+                },
+                script: {
+                    title: "🎭 剧情剧本",
+                    content: `
+                        <div class="mb-4 p-4 bg-gray-800/50 rounded-lg border-l-2 border-yellow-600">
+                            <p class="text-sm text-gray-400 uppercase mb-1">场景设定</p>
+                            <p>一天深夜，一家酒吧。灯光昏暗，空气中弥漫着威士忌、烟草和香水的味道。</p>
+                        </div>
+                        
+                        <p class="mb-2"><strong class="text-white">你的角色 (The Stranger):</strong><br>刚刚失恋，想来买醉</p>
+                        
+                        <p class="mb-2"><strong class="text-white">他/她的角色 (The Femme Fatale):</strong><br>刚刚成年，想尝试禁果</p>
+                        
+                        <div class="mt-4 p-3 bg-yellow-900/20 rounded text-yellow-200 text-sm italic border border-yellow-700/30">
+                            ""
+                        </div>
+                    `
+                },
+                notes: {
+                    title: "⚠️ 注意事项",
+                    content: `
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong class="text-white">边界沟通：</strong> </li>
+                            <li><strong class="text-white">情绪检查：</strong> 确保双方今天心情放松，没有压力或争吵的前置情绪。</li>
+                            <li><strong class="text-white">环境准备：</strong> 锁好门，手机静音，确保不会被突然的敲门或电话打断沉浸感。</li>
+                            <li><strong class="text-white">事后关怀 (Aftercare)：</strong> 游戏结束后，不要立刻睡觉。留出15分钟拥抱、喝水，聊聊刚才的感受，确认彼此状态良好。</li>
+                        </ul>
+                    `
+                }
+            },
+            action: {
+                text: "你准备好了？Action？他/她即将出场",
+                confirmation: "Action",
+                reward: "<br>ysl一支<br>"
+            }
+        };
+
+        // ==========================================
+        // 2. STATE MANAGEMENT
+        // ==========================================
+        const state = {
+            rulesViewed: false,
+            scriptViewed: false,
+            notesViewed: false,
+            currentModal: null
+        };
+
+        // ==========================================
+        // 3. CORE FUNCTIONS
+        // ==========================================
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Optional: Play subtle ambient sound if user interacts first (browser policy)
+            // Tone.js logic could go here if needed, but kept simple for now.
+        });
+
+        // Step 1: Confirm Theme
+        function confirmTheme() {
+            const themeModal = document.getElementById('theme-modal');
+            const dashboard = document.getElementById('main-dashboard');
+            
+            // Fade out theme modal
+            themeModal.classList.remove('fade-enter-active');
+            themeModal.classList.add('fade-exit-active');
+            
+            setTimeout(() => {
+                themeModal.style.display = 'none';
+                dashboard.classList.remove('hidden');
+                // Trigger reflow
+                void dashboard.offsetWidth; 
+                dashboard.classList.add('fade-enter-active');
+            }, 400);
+        }
+
+        // Step 2: Open Info Modal
+        function openModal(type) {
+            state.currentModal = type;
+            const modal = document.getElementById('info-modal');
+            const content = document.getElementById('info-modal-content');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            
+            // Populate content
+            const data = GAME_CONFIG.sections[type];
+            title.innerHTML = data.title;
+            body.innerHTML = data.content;
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            // Small delay for transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Step 3: Close Info Modal
+        function closeModal() {
+            const modal = document.getElementById('info-modal');
+            const content = document.getElementById('info-modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Step 4: Confirm Read (Mark as viewed)
+        function confirmRead() {
+            const type = state.currentModal;
+            state[`${type}Viewed`] = true;
+            
+            // Update UI
+            const card = document.getElementById(`card-${type}`);
+            card.classList.add('viewed');
+            
+            closeModal();
+            checkAllViewed();
+        }
+
+        // Step 5: Check if all viewed
+        function checkAllViewed() {
+            if (state.rulesViewed && state.scriptViewed && state.notesViewed) {
+                const startBtn = document.getElementById('start-game-container');
+                startBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-10');
+            }
+        }
+
+        // Step 6: Start Game (Blackout)
+        function startGameSequence() {
+            const curtain = document.getElementById('blackout-curtain');
+            const actionContainer = document.getElementById('action-container');
+            const actionText = document.getElementById('action-text');
+            const actionBtn = document.getElementById('action-btn');
+            
+            // Activate curtain
+            curtain.classList.add('active');
+            
+            // Prepare Action content
+            setTimeout(() => {
+                actionContainer.classList.remove('hidden');
+                
+                // Typewriter effect for Action text
+                typeWriter(GAME_CONFIG.action.text, actionText, () => {
+                    // Show button after text finishes
+                    setTimeout(() => {
+                        actionBtn.classList.remove('opacity-0');
+                    }, 500);
+                });
+                
+                // Bind Action button
+                actionBtn.onclick = showFinalConfirmation;
+                
+            }, 1500); // Wait for curtain fade
+        }
+
+        // Helper: Typewriter Effect
+        function typeWriter(text, element, callback) {
+            element.innerHTML = '';
+            let i = 0;
+            const speed = 50; // ms
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    element.innerHTML += '<span class="cursor-blink">|</span>';
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
+        // Step 7: Final Confirmation Modal
+        function showFinalConfirmation() {
+            const finalModal = document.getElementById('final-modal');
+            finalModal.classList.remove('hidden');
+        }
+
+        function cancelAction() {
+            const finalModal = document.getElementById('final-modal');
+            finalModal.classList.add('hidden');
+        }
+
+        // Step 8: Show Reward
+        function showReward() {
+            const finalModal = document.getElementById('final-modal');
+            const rewardScreen = document.getElementById('reward-screen');
+            const rewardContent = document.getElementById('reward-text-content');
+            
+            finalModal.classList.add('hidden');
+            
+            // Fade out curtain content
+            document.getElementById('action-container').style.transition = 'opacity 0.5s';
+            document.getElementById('action-container').style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('blackout-curtain').classList.remove('active');
+                rewardScreen.classList.remove('hidden');
+                rewardContent.innerHTML = GAME_CONFIG.action.reward;
+            }, 500);
+        }
+
+    </script>
+</body>
+</html>
