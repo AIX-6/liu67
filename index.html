@@ -261,7 +261,6 @@
             from { box-shadow: 0 0 10px rgba(255, 158, 181, 0.6); }
             to { box-shadow: 0 0 20px rgba(255, 158, 181, 1); }
         }
-        /* 角色扮演格子特殊样式 */
         .cell-cosplay {
             --cell-bg: linear-gradient(45deg, #ff6b6b, #feca57) !important;
             animation: cosplayGlow 2s ease-in-out infinite alternate;
@@ -276,23 +275,6 @@
             top: 2px;
             right: 2px;
             font-size: 12px;
-            opacity: 0.8;
-        }
-        /* 普通自定义跳转格子样式 */
-        .cell-custom-jump {
-            --cell-bg: linear-gradient(45deg, #2196F3, #03A9F4) !important;
-            animation: customJumpGlow 2s ease-in-out infinite alternate;
-        }
-        @keyframes customJumpGlow {
-            from { box-shadow: 0 0 10px rgba(33, 150, 243, 0.6); }
-            to { box-shadow: 0 0 20px rgba(33, 150, 243, 1); }
-        }
-        .cell-custom-jump::after {
-            content: "🔗";
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            font-size: 10px;
             opacity: 0.8;
         }
         .particle {
@@ -612,7 +594,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             z-index: 1001;
             display: none;
-            width: 450px;
+            width: 400px;
             max-height: 85vh;
             overflow-y: auto;
             font-family: 'ZCOOL XiaoWei', sans-serif;
@@ -655,40 +637,7 @@
             cursor: pointer;
         }
         .bg-upload:hover { border-color: #2196f3; }
-        .jump-setting {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-        }
-        .jump-input {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .add-jump-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .remove-jump-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            margin-top: 5px;
-            cursor: pointer;
-        }
         
-        /* 角色扮演游戏预设样式 */
         .cosplay-preset {
             margin: 15px 0;
             padding: 15px;
@@ -724,21 +673,42 @@
         .cosplay-police { background: linear-gradient(90deg, #f093fb, #f5576c); color: white; }
         .cosplay-siblings { background: linear-gradient(90deg, #4facfe, #00f2fe); color: white; }
         .cosplay-teacher { background: linear-gradient(90deg, #43e97b, #38f9d7); color: white; }
+		.cosplay-outdoor { background: linear-gradient(90deg, #11998e, #38ef7d); color: white; }
         
-        /* 自定义URL跳转设置区域 */
-        .custom-url-section {
-            margin: 20px 0;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            background: #f5f5f5;
+        .jump-setting {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
         }
-        .custom-url-section h4 {
-            color: #2196F3;
-            margin-bottom: 10px;
-            font-size: 14px;
+        .jump-input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .add-jump-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .remove-jump-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            cursor: pointer;
         }
         
+        /* 编辑面板样式 */
         .edit-panel {
             position: fixed;
             top: 50%;
@@ -792,10 +762,6 @@
             background: #ffe6f0;
             box-shadow: 0 0 10px rgba(255, 64, 129, 0.3);
         }
-        .cell-edit-item.has-custom-jump {
-            border-color: #2196F3;
-            background: #e3f2fd;
-        }
         .cell-edit-item.has-cosplay {
             border-color: #ff6b6b;
             background: #fff0f0;
@@ -812,15 +778,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-        .jump-indicator {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2196F3;
         }
         .cosplay-indicator {
             position: absolute;
@@ -926,6 +883,7 @@
             color: white;
         }
         
+        /* 传送面板样式 */
         .teleport-panel {
             position: fixed;
             top: 50%;
@@ -1246,28 +1204,24 @@
             </div>
         </div>
         <div class="settings-content" id="jumpSettings">
-            <h3 style="margin-bottom: 15px; text-align: center;">格子跳转设置</h3>
-            <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">设置特定格子跳转到指定页面（1-81）</p>
+            <h3 style="margin-bottom: 15px; text-align: center;">角色扮演跳转设置</h3>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">设置特定格子跳转到角色扮演游戏（1-81）</p>
             
-            <!-- 角色扮演游戏预设 -->
             <div class="cosplay-preset">
                 <h4>🎭 快速设置角色扮演游戏</h4>
-                <button class="cosplay-btn cosplay-bar" onclick="quickSetCosplay('bar')">🍷 酒吧邂逅</button>
-                <button class="cosplay-btn cosplay-police" onclick="quickSetCosplay('police')">👮 警察与小偷</button>
-                <button class="cosplay-btn cosplay-siblings" onclick="quickSetCosplay('siblings')">👫 兄妹情深</button>
-                <button class="cosplay-btn cosplay-teacher" onclick="quickSetCosplay('teacher')">📚 师生情缘</button>
+                <button class="cosplay-btn cosplay-bar" onclick="quickSetCosplay('bar')">🍷 酒吧邂逅 → cosbar.html</button>
+                <button class="cosplay-btn cosplay-police" onclick="quickSetCosplay('police')">👮 警察与小偷 → cosplice.html</button>
+                <button class="cosplay-btn cosplay-siblings" onclick="quickSetCosplay('siblings')">👫 兄妹情深 → cosborther.html</button>
+                <button class="cosplay-btn cosplay-teacher" onclick="quickSetCosplay('teacher')">📚 师生情缘 → cosstudents.html</button>
+				<button class="cosplay-btn cosplay-outdoor" onclick="quickSetCosplay('outdoor')">🌲 户外探险 → outdoor.html</button>
             </div>
             
-            <!-- 自定义URL跳转 -->
-            <div class="custom-url-section">
-                <h4>🔗 自定义URL跳转</h4>
-                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">可以设置跳转到任意页面，如 new_index.html 或其他网址</p>
-                <div id="jumpSettingsList"></div>
-                <button class="add-jump-btn" onclick="addJumpSetting()">+ 添加自定义跳转</button>
-            </div>
+            <div id="jumpSettingsList"></div>
         </div>
         <button class="close-popup" style="margin-top: 15px; width: 100%;" onclick="closePopup()">关闭</button>
     </div>
+    
+    <!-- 编辑面板 -->
     <div class="edit-panel" id="editPanel">
         <button class="edit-panel-close" onclick="closeEditPanel()">×</button>
         <h3>编辑格子内容</h3>
@@ -1296,6 +1250,8 @@
             <button class="save-cell-btn" onclick="saveCellEdit()">保存修改</button>
         </div>
     </div>
+    
+    <!-- 传送面板 -->
     <div class="teleport-panel" id="teleportPanel">
         <h3>✨ 瞬间传送 ✨</h3>
         <div class="teleport-input-group">
@@ -1316,6 +1272,7 @@
             <button class="teleport-btn teleport-confirm" id="teleportConfirmBtn" onclick="executeTeleport()">开始传送</button>
         </div>
     </div>
+    
     <div class="popup-overlay" id="popupOverlay"></div>
     <div class="effect-popup" id="effectPopup">
         <h3 id="popupTitle"></h3>
@@ -1326,7 +1283,7 @@
     <script>
         // 游戏配置 - 81格版本
         const TOTAL_CELLS = 81;
-        const GRID_SIZE = 9; // 9x9网格
+        const GRID_SIZE = 9;
         
         let player1Position = 0;
         let player2Position = 0;
@@ -1336,39 +1293,42 @@
         let currentEditingCell = 0;
         let selectedTeleportPlayer = 1;
         
-        // 四个角色扮演游戏配置
+        // 4个角色扮演游戏配置
         const cosplayGames = {
             'bar': {
-                filename: 'cosChance Encounter at a Bar.html',
+                filename: 'unpackage/cosbar.html',
                 name: '酒吧邂逅',
                 icon: '🍷',
                 description: '在酒吧偶遇的浪漫故事'
             },
             'police': {
-                filename: 'cosPolice and thieves.html',
+                filename: 'unpackage/cosplice.html',
                 name: '警察与小偷',
                 icon: '👮',
                 description: '正义与邪恶的追逐游戏'
             },
             'siblings': {
-                filename: 'cosSiblings.html',
+                filename: 'unpackage/cosborther.html',
                 name: '兄妹情深',
                 icon: '👫',
                 description: '兄妹之间的温馨互动'
             },
             'teacher': {
-                filename: 'cosTeacher and student.html',
+                filename: 'unpackage/cosstudents.html',
                 name: '师生情缘',
                 icon: '📚',
                 description: '课堂上的特别辅导'
-            }
+            },
+			'outdoor': {
+			    filename: 'unpackage/outdoor.html',  // 户外探险
+			    name: '户外探险',
+			    icon: '🌲',
+			    description: '在大自然中的浪漫冒险'
+			}
         };
         
-        // 存储角色扮演游戏跳转设置（格子索引 -> 游戏key）
+        // 存储角色扮演游戏跳转设置
         let cosplayJumps = {};
-        
-        // 存储普通自定义URL跳转（格子索引 -> URL）
-        let customJumps = {};
         
         const musicOptions = {
             'romantic1': 'https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3',
@@ -1376,7 +1336,6 @@
             'funny1': 'https://assets.mixkit.co/music/preview/mixkit-happy-times-158.mp3'
         };
         
-        // 背景选项
         const backgroundOptions = {
             'gradient1': [
                 'linear-gradient(45deg, #ff9a9e, #fad0c4)',
@@ -1423,12 +1382,10 @@
             for (let row = 0; row < GRID_SIZE; row++) {
                 const rowArr = [];
                 if (row % 2 === 0) {
-                    // 偶数行：从左到右
                     for (let col = 0; col < GRID_SIZE; col++) {
                         rowArr.push(index++);
                     }
                 } else {
-                    // 奇数行：从右到左
                     for (let col = GRID_SIZE - 1; col >= 0; col--) {
                         rowArr.push(index++);
                     }
@@ -1491,7 +1448,6 @@
         
         function createPathLines() {
             const board = document.getElementById('gameBoard');
-            // 清除旧的路径线
             const oldSvg = board.querySelector('svg');
             if (oldSvg) oldSvg.remove();
             
@@ -1545,13 +1501,8 @@
                 }
                 const cellIndex = parseInt(cell.dataset.index);
                 
-                // 检查是否是角色扮演格子
                 if (cosplayJumps[cellIndex]) {
                     cell.classList.add('cell-cosplay');
-                }
-                // 检查是否是普通自定义跳转格子
-                else if (customJumps[cellIndex]) {
-                    cell.classList.add('cell-custom-jump');
                 }
                 else if (cellEffects[cellIndex].type === 'special' || cellEffects[cellIndex].type === 'lucky') {
                     cell.classList.add('cell-glowing');
@@ -1752,45 +1703,23 @@
             return names[key] || '';
         }
         
-        // ==================== 跳转设置功能（保留原有+新增） ====================
+        // ==================== 跳转设置功能 ====================
         
         function loadJumpSettings() {
-            // 加载普通自定义跳转
-            const savedJumps = localStorage.getItem('flyingChessJumps_v2');
-            if (savedJumps) {
-                customJumps = JSON.parse(savedJumps);
-            }
-            // 加载角色扮演游戏跳转
-            const savedCosplay = localStorage.getItem('flyingChessCosplay_v2');
+            const savedCosplay = localStorage.getItem('flyingChessCosplay_v3');
             if (savedCosplay) {
                 cosplayJumps = JSON.parse(savedCosplay);
             }
         }
         
         function saveJumpSettings() {
-            localStorage.setItem('flyingChessJumps_v2', JSON.stringify(customJumps));
-            localStorage.setItem('flyingChessCosplay_v2', JSON.stringify(cosplayJumps));
+            localStorage.setItem('flyingChessCosplay_v3', JSON.stringify(cosplayJumps));
         }
         
         function renderJumpSettings() {
             const container = document.getElementById('jumpSettingsList');
             container.innerHTML = '';
             
-            // 显示普通自定义跳转
-            for (const [cellIndex, url] of Object.entries(customJumps)) {
-                const settingDiv = document.createElement('div');
-                settingDiv.className = 'jump-setting';
-                settingDiv.style.borderLeft = '4px solid #2196F3';
-                settingDiv.innerHTML = `
-                    <div style="color: #2196F3; font-weight: bold;">🔗 格子 ${parseInt(cellIndex) + 1}</div>
-                    <input type="text" class="jump-input" value="${url}" 
-                        onchange="updateJumpUrl(${cellIndex}, this.value)" placeholder="跳转URL">
-                    <button class="remove-jump-btn" onclick="removeJumpSetting(${cellIndex})">删除</button>
-                `;
-                container.appendChild(settingDiv);
-            }
-            
-            // 显示角色扮演游戏跳转
             for (const [cellIndex, gameKey] of Object.entries(cosplayJumps)) {
                 const game = cosplayGames[gameKey];
                 const settingDiv = document.createElement('div');
@@ -1799,18 +1728,18 @@
                 settingDiv.innerHTML = `
                     <div style="color: #ff6b6b; font-weight: bold;">🎭 格子 ${parseInt(cellIndex) + 1} → ${game.icon} ${game.name}</div>
                     <div style="font-size: 12px; color: #666; margin: 5px 0;">${game.description}</div>
-                    <button class="remove-jump-btn" onclick="removeCosplayJump(${cellIndex})">删除角色扮演</button>
+                    <div style="font-size: 11px; color: #999;">文件: ${game.filename}</div>
+                    <button class="remove-jump-btn" onclick="removeCosplayJump(${cellIndex})">删除</button>
                 `;
                 container.appendChild(settingDiv);
             }
         }
         
-        // 快速设置角色扮演游戏到指定格子（新增）
         function quickSetCosplay(gameKey) {
             const game = cosplayGames[gameKey];
             const cellNum = prompt(`请输入要将"${game.name}"设置到哪个格子？\n\n${game.description}\n\n请输入1-${TOTAL_CELLS}之间的数字：`);
             
-            if (cellNum === null) return; // 用户取消
+            if (cellNum === null) return;
             
             const cellIndex = parseInt(cellNum) - 1;
             
@@ -1819,35 +1748,27 @@
                 return;
             }
             
-            // 检查是否已被占用
-            if (cosplayJumps[cellIndex] || customJumps[cellIndex]) {
-                const existing = cosplayJumps[cellIndex] ? 
-                    cosplayGames[cosplayJumps[cellIndex]].name : 
-                    '自定义链接';
+            if (cosplayJumps[cellIndex]) {
+                const existing = cosplayGames[cosplayJumps[cellIndex]].name;
                 if (!confirm(`格子${cellNum}已设置跳转到"${existing}"，是否覆盖？`)) {
                     return;
                 }
-                // 删除旧的
-                delete cosplayJumps[cellIndex];
-                delete customJumps[cellIndex];
             }
             
-            // 设置新的角色扮演游戏
             cosplayJumps[cellIndex] = gameKey;
             
-            // 更新格子效果
             cellEffects[cellIndex] = {
                 type: 'special',
                 text: game.name,
-                effect: `🎭 角色扮演：${game.description}\n\n点击确定后将跳转到游戏页面`
+                effect: `🎭 角色扮演：${game.description}\n\n落在此格子将自动跳转到游戏页面`
             };
             
             saveJumpSettings();
-            localStorage.setItem('flyingChessCellEffects_v2', JSON.stringify(cellEffects));
+            localStorage.setItem('flyingChessCellEffects_v3', JSON.stringify(cellEffects));
             renderJumpSettings();
             createBoard();
             
-            alert(`✅ 已将"${game.name}"设置到第${cellNum}格！\n\n当玩家落在此格子时，将自动触发角色扮演游戏跳转。`);
+            alert(`✅ 已将"${game.name}"设置到第${cellNum}格！\n\n当玩家落在此格子时，将自动跳转到游戏页面。`);
         }
         
         function removeCosplayJump(cellIndex) {
@@ -1857,328 +1778,7 @@
             createBoard();
         }
         
-        // 保留原有的自定义跳转功能
-        function addJumpSetting() {
-            const cellNum = prompt(`请输入要设置跳转的格子编号（1-${TOTAL_CELLS}）：`);
-            if (cellNum === null) return;
-            
-            const cellIndex = parseInt(cellNum) - 1;
-            if (isNaN(cellIndex) || cellIndex < 0 || cellIndex >= TOTAL_CELLS) {
-                alert(`请输入有效的格子编号（1-${TOTAL_CELLS}）`);
-                return;
-            }
-            
-            if (cosplayJumps[cellIndex] || customJumps[cellIndex]) {
-                const existing = cosplayJumps[cellIndex] ? 
-                    cosplayGames[cosplayJumps[cellIndex]].name : 
-                    '自定义链接';
-                if (!confirm(`格子${cellNum}已设置跳转到"${existing}"，是否覆盖？`)) {
-                    return;
-            }
-                delete cosplayJumps[cellIndex];
-                delete customJumps[cellIndex];
-            }
-            
-            const url = prompt('请输入跳转URL：\n\n例如：new_index.html 或 https://example.com', 'new_index.html');
-            if (url === null || url.trim() === '') return;
-            
-            customJumps[cellIndex] = url.trim();
-            saveJumpSettings();
-            renderJumpSettings();
-            createBoard();
-            
-            alert(`✅ 已将自定义跳转设置到第${cellNum}格！\n\n跳转目标：${url}`);
-        }
-        
-        function updateJumpUrl(cellIndex, newUrl) {
-            customJumps[cellIndex] = newUrl;
-            saveJumpSettings();
-        }
-        
-        function removeJumpSetting(cellIndex) {
-            delete customJumps[cellIndex];
-            saveJumpSettings();
-            renderJumpSettings();
-            createBoard();
-        }
-        
-        function createBoard() {
-            const board = document.getElementById('gameBoard');
-            board.innerHTML = '';
-            
-            for (let row = 0; row < GRID_SIZE; row++) {
-                for (let col = 0; col < GRID_SIZE; col++) {
-                    const cellIndex = boardLayout[row][col];
-                    const cell = document.createElement('div');
-                    
-                    // 确定格子类型样式
-                    let cellClass = 'cell';
-                    if (cosplayJumps[cellIndex]) {
-                        cellClass += ' cell-cosplay';
-                    } else if (customJumps[cellIndex]) {
-                        cellClass += ' cell-custom-jump';
-                    } else {
-                        cellClass += ' ' + cellEffects[cellIndex].type;
-                    }
-                    
-                    cell.className = cellClass;
-                    cell.id = `cell-${cellIndex}`;
-                    cell.dataset.index = cellIndex;
-                    
-                    // 确定显示文字
-                    let displayText;
-                    if (cosplayJumps[cellIndex]) {
-                        displayText = cosplayGames[cosplayJumps[cellIndex]].name;
-                    } else if (customJumps[cellIndex]) {
-                        displayText = '跳转';
-                    } else {
-                        displayText = cellEffects[cellIndex].text;
-                    }
-                    
-                    cell.innerHTML = `
-                        <div class="cell-number">${cellIndex + 1}</div>
-                        <div class="cell-effect">${displayText}</div>
-                    `;
-                    cell.addEventListener('click', () => showCellEffect(cellIndex));
-                    board.appendChild(cell);
-                }
-            }
-            beautifyCells();
-            // 延迟创建路径线，确保DOM已渲染
-            setTimeout(createPathLines, 100);
-            updatePlayerPieces();
-        }
-        
-        function showCellEffect(cellIndex) {
-            const effect = cellEffects[cellIndex];
-            const cosplayGame = cosplayJumps[cellIndex];
-            const customUrl = customJumps[cellIndex];
-            
-            if (cosplayGame) {
-                const game = cosplayGames[cosplayGame];
-                document.getElementById('popupTitle').textContent = `🎭 第${cellIndex + 1}格 - ${game.name}`;
-                document.getElementById('popupContent').innerHTML = 
-                    `<strong>${game.description}</strong><br><br>` +
-                    `🎮 游戏文件：${game.filename}<br>` +
-                    `🍷 角色扮演模式<br><br>` +
-                    `<em>落在此格子将自动跳转到游戏页面</em>`;
-            } else if (customUrl) {
-                document.getElementById('popupTitle').textContent = `🔗 第${cellIndex + 1}格 - 自定义跳转`;
-                document.getElementById('popupContent').innerHTML = 
-                    `<strong>跳转目标：</strong><br>${customUrl}<br><br>` +
-                    `<em>落在此格子将提示是否跳转到该链接</em>`;
-            } else {
-                document.getElementById('popupTitle').textContent = `第${cellIndex + 1}格 - ${effect.text}`;
-                document.getElementById('popupContent').textContent = effect.effect || '暂无描述';
-            }
-            
-            document.getElementById('popupOverlay').style.display = 'block';
-            document.getElementById('effectPopup').style.display = 'block';
-        }
-        
-        function rollDice(playerNum) {
-            if (gameEnded || isMoving) return;
-            
-            const diceElement = document.getElementById(`dice${playerNum}`);
-            const rollBtn = document.getElementById(`rollBtn${playerNum}`);
-            
-            rollBtn.disabled = true;
-            diceElement.classList.add('rolling');
-            
-            let rollCount = 0;
-            const rollInterval = setInterval(() => {
-                diceElement.textContent = Math.floor(Math.random() * 6) + 1;
-                rollCount++;
-                if (rollCount > 8) {
-                    clearInterval(rollInterval);
-                    const result = Math.floor(Math.random() * 6) + 1;
-                    diceElement.textContent = result;
-                    diceElement.classList.remove('rolling');
-                    movePlayer(result, playerNum);
-                }
-            }, 100);
-        }
-        
-        function getCellPosition(cellIndex, playerNum) {
-            for (let row = 0; row < GRID_SIZE; row++) {
-                for (let col = 0; col < GRID_SIZE; col++) {
-                    if (boardLayout[row][col] === cellIndex) {
-                        const cell = document.getElementById(`cell-${cellIndex}`);
-                        if (cell) {
-                            const rect = cell.getBoundingClientRect();
-                            const boardRect = document.getElementById('gameBoard').getBoundingClientRect();
-                            return {
-                                x: rect.left - boardRect.left + (playerNum === 1 ? 5 : 40),
-                                y: rect.top - boardRect.top + (playerNum === 1 ? 5 : 40)
-                            };
-                        }
-                    }
-                }
-            }
-            console.warn(`Cell ${cellIndex} not found`);
-            return { x: 0, y: 0 };
-        }
-        
-        function movePlayer(steps, playerNum) {
-            const oldPosition = playerNum === 1 ? player1Position : player2Position;
-            let newPosition = oldPosition + steps;
-            if (newPosition >= TOTAL_CELLS - 1) {
-                newPosition = TOTAL_CELLS - 1;
-            }
-            
-            movePlayerStepByStep(oldPosition, newPosition, steps, playerNum);
-        }
-        
-        function movePlayerStepByStep(oldPosition, newPosition, steps, playerNum) {
-            isMoving = true;
-            
-            const movingPiece = document.createElement('div');
-            movingPiece.className = `moving-piece moving-player${playerNum}`;
-            movingPiece.innerHTML = playerNum === 1 ? '女' : '男';
-            
-            const startPos = getCellPosition(oldPosition, playerNum);
-            movingPiece.style.position = 'absolute';
-            movingPiece.style.left = `${startPos.x}px`;
-            movingPiece.style.top = `${startPos.y}px`;
-            document.getElementById('gameBoard').appendChild(movingPiece);
-            
-            const currentPlayerPiece = document.querySelector(`.piece-player${playerNum}`);
-            if (currentPlayerPiece) {
-                currentPlayerPiece.style.visibility = 'hidden';
-            }
-            
-            let currentStep = 0;
-            const moveInterval = setInterval(() => {
-                if (currentStep >= steps) {
-                    clearInterval(moveInterval);
-                    movingPiece.remove();
-                    
-                    if (currentPlayerPiece) {
-                        currentPlayerPiece.style.visibility = 'visible';
-                    }
-                    
-                    if (playerNum === 1) {
-                        player1Position = newPosition;
-                    } else {
-                        player2Position = newPosition;
-                    }
-                    
-                    updatePlayerPieces();
-                    updatePlayerInfo();
-                    handleLanding(newPosition, playerNum);
-                    
-                    document.getElementById(`rollBtn${playerNum}`).disabled = false;
-                    
-                    if (newPosition >= TOTAL_CELLS - 1) {
-                        setTimeout(() => {
-                            endGame(playerNum);
-                            isMoving = false;
-                        }, 1000);
-                    } else {
-                        setTimeout(() => {
-                            isMoving = false;
-                        }, 1000);
-                    }
-                    return;
-                }
-                const nextPosition = oldPosition + currentStep + 1;
-                const nextPos = getCellPosition(nextPosition, playerNum);
-                movingPiece.style.left = `${nextPos.x}px`;
-                movingPiece.style.top = `${nextPos.y}px`;
-                currentStep++;
-            }, 300);
-        }
-        
-        function handleLanding(cellIndex, playerNum) {
-            // 优先检查角色扮演游戏跳转（新增）
-            if (cosplayJumps[cellIndex]) {
-                const gameKey = cosplayJumps[cellIndex];
-                const game = cosplayGames[gameKey];
-                
-                // 显示特效弹窗
-                document.getElementById('popupTitle').innerHTML = `🎭 触发角色扮演！`;
-                document.getElementById('popupContent').innerHTML = 
-                    `<strong style="font-size: 18px; color: #ff6b6b;">${game.name}</strong><br><br>` +
-                    `${game.description}<br><br>` +
-                    `即将跳转到角色扮演游戏...`;
-                
-                document.getElementById('popupOverlay').style.display = 'block';
-                document.getElementById('effectPopup').style.display = 'block';
-                
-                // 3秒后自动跳转
-                setTimeout(() => {
-                    window.location.href = game.filename;
-                }, 2500);
-                
-                return;
-            }
-            
-            // 检查普通自定义跳转（保留原有功能）
-            if (customJumps[cellIndex]) {
-                const shouldJump = confirm(`第${cellIndex + 1}格设置了跳转链接！\n\n是否跳转到: ${customJumps[cellIndex]}?\n\n点击"确定"立即跳转，点击"取消"留在当前格子查看效果`);
-                if (shouldJump) {
-                    window.location.href = customJumps[cellIndex];
-                    return;
-                }
-            }
-            
-            // 显示普通格子效果
-            showCellEffect(cellIndex);
-        }
-        
-        function updatePlayerPieces() {
-            document.querySelectorAll('.player-piece').forEach(piece => piece.remove());
-            if (player1Position >= 0) {
-                const cell1 = document.getElementById(`cell-${player1Position}`);
-                if (cell1) {
-                    const piece1 = document.createElement('div');
-                    piece1.className = 'player-piece piece-player1';
-                    piece1.innerHTML = '女';
-                    if (player1Position === player2Position) {
-                        piece1.style.left = '2px';
-                        piece1.style.top = '2px';
-                    }
-                    cell1.appendChild(piece1);
-                }
-            }
-            if (player2Position >= 0) {
-                const cell2 = document.getElementById(`cell-${player2Position}`);
-                if (cell2) {
-                    const piece2 = document.createElement('div');
-                    piece2.className = 'player-piece piece-player2';
-                    piece2.innerHTML = '男';
-                    if (player1Position === player2Position) {
-                        piece2.style.right = '2px';
-                        piece2.style.bottom = '2px';
-                    }
-                    cell2.appendChild(piece2);
-                }
-            }
-        }
-        
-        function updatePlayerInfo() {
-            document.getElementById('player1Position').textContent = 
-                player1Position === 0 ? '起点' : 
-                player1Position >= TOTAL_CELLS - 1 ? '终点' : `第${player1Position + 1}格`;
-            document.getElementById('player2Position').textContent = 
-                player2Position === 0 ? '起点' : 
-                player2Position >= TOTAL_CELLS - 1 ? '终点' : `第${player2Position + 1}格`;
-        }
-        
-        function endGame(winner) {
-            gameEnded = true;
-            const winnerName = winner === 1 ? '女朋友' : '男朋友';
-            document.getElementById('popupTitle').textContent = '游戏结束！';
-            document.getElementById('popupContent').textContent = `${winnerName} 赢得了今晚的主宰权！🎉`;
-            document.getElementById('popupOverlay').style.display = 'block';
-            document.getElementById('effectPopup').style.display = 'block';
-            const winnerPiece = document.querySelector(`.piece-player${winner}`);
-            if (winnerPiece) {
-                winnerPiece.classList.add('victory');
-            }
-            document.getElementById('rollBtn1').disabled = true;
-            document.getElementById('rollBtn2').disabled = true;
-        }
+        // ==================== 编辑格子功能 ====================
         
         function openEditPanel() {
             document.getElementById('popupOverlay').style.display = 'block';
@@ -2203,9 +1803,6 @@
                 if (i === currentEditingCell) {
                     item.classList.add('selected');
                 }
-                if (customJumps[i]) {
-                    item.classList.add('has-custom-jump');
-                }
                 if (cosplayJumps[i]) {
                     item.classList.add('has-cosplay');
                 }
@@ -2216,14 +1813,10 @@
                 let displayText = effect.text || '未设置';
                 if (cosplayGame) {
                     displayText = cosplayGames[cosplayGame].name;
-                } else if (customJumps[i]) {
-                    displayText = '🔗 跳转';
                 }
                 
                 let indicator = '';
-                if (customJumps[i]) {
-                    indicator = '<div class="jump-indicator"></div>';
-                } else if (cosplayJumps[i]) {
+                if (cosplayJumps[i]) {
                     indicator = '<div class="cosplay-indicator"></div>';
                 }
                 
@@ -2279,21 +1872,15 @@
                 effect: effect
             };
             
-            localStorage.setItem('flyingChessCellEffects_v2', JSON.stringify(cellEffects));
+            localStorage.setItem('flyingChessCellEffects_v3', JSON.stringify(cellEffects));
             createBoard();
             renderCellEditorGrid();
             selectCellToEdit(currentEditingCell);
             alert(`第 ${currentEditingCell + 1} 格保存成功！`);
         }
         
-        function loadSavedCellEffects() {
-            const saved = localStorage.getItem('flyingChessCellEffects_v2');
-            if (saved) {
-                cellEffects = JSON.parse(saved);
-            }
-        }
+        // ==================== 传送功能 ====================
         
-        // 传送功能
         function openTeleportPanel() {
             if (gameEnded) {
                 alert('游戏已结束，无法传送');
@@ -2430,8 +2017,8 @@
                             
                             updatePlayerPieces();
                             updatePlayerInfo();
-                            handleLanding(toIndex, playerNum);
                             
+                            // 传送后不触发格子效果，直接结束
                             if (toIndex >= TOTAL_CELLS - 1) {
                                 setTimeout(() => {
                                     endGame(playerNum);
@@ -2477,11 +2064,255 @@
             }
         }
         
-        document.getElementById('teleportInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                executeTeleport();
+        // ==================== 游戏核心功能 ====================
+        
+        function createBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    const cellIndex = boardLayout[row][col];
+                    const cell = document.createElement('div');
+                    
+                    let cellClass = 'cell';
+                    if (cosplayJumps[cellIndex]) {
+                        cellClass += ' cell-cosplay';
+                    } else {
+                        cellClass += ' ' + cellEffects[cellIndex].type;
+                    }
+                    
+                    cell.className = cellClass;
+                    cell.id = `cell-${cellIndex}`;
+                    cell.dataset.index = cellIndex;
+                    
+                    let displayText;
+                    if (cosplayJumps[cellIndex]) {
+                        displayText = cosplayGames[cosplayJumps[cellIndex]].name;
+                    } else {
+                        displayText = cellEffects[cellIndex].text;
+                    }
+                    
+                    cell.innerHTML = `
+                        <div class="cell-number">${cellIndex + 1}</div>
+                        <div class="cell-effect">${displayText}</div>
+                    `;
+                    cell.addEventListener('click', () => showCellEffect(cellIndex));
+                    board.appendChild(cell);
+                }
             }
-        });
+            beautifyCells();
+            setTimeout(createPathLines, 100);
+            updatePlayerPieces();
+        }
+        
+        function showCellEffect(cellIndex) {
+            const effect = cellEffects[cellIndex];
+            const cosplayGame = cosplayJumps[cellIndex];
+            
+            if (cosplayGame) {
+                const game = cosplayGames[cosplayGame];
+                document.getElementById('popupTitle').textContent = `🎭 第${cellIndex + 1}格 - ${game.name}`;
+                document.getElementById('popupContent').innerHTML = 
+                    `<strong>${game.description}</strong><br><br>` +
+                    `🎮 游戏文件：${game.filename}<br>` +
+                    `🍷 角色扮演模式<br><br>` +
+                    `<em>落在此格子将自动跳转到游戏页面</em>`;
+            } else {
+                document.getElementById('popupTitle').textContent = `第${cellIndex + 1}格 - ${effect.text}`;
+                document.getElementById('popupContent').textContent = effect.effect || '暂无描述';
+            }
+            
+            document.getElementById('popupOverlay').style.display = 'block';
+            document.getElementById('effectPopup').style.display = 'block';
+        }
+        
+        function rollDice(playerNum) {
+            if (gameEnded || isMoving) return;
+            
+            const diceElement = document.getElementById(`dice${playerNum}`);
+            const rollBtn = document.getElementById(`rollBtn${playerNum}`);
+            
+            rollBtn.disabled = true;
+            diceElement.classList.add('rolling');
+            
+            let rollCount = 0;
+            const rollInterval = setInterval(() => {
+                diceElement.textContent = Math.floor(Math.random() * 6) + 1;
+                rollCount++;
+                if (rollCount > 8) {
+                    clearInterval(rollInterval);
+                    const result = Math.floor(Math.random() * 6) + 1;
+                    diceElement.textContent = result;
+                    diceElement.classList.remove('rolling');
+                    movePlayer(result, playerNum);
+                }
+            }, 100);
+        }
+        
+        function getCellPosition(cellIndex, playerNum) {
+            for (let row = 0; row < GRID_SIZE; row++) {
+                for (let col = 0; col < GRID_SIZE; col++) {
+                    if (boardLayout[row][col] === cellIndex) {
+                        const cell = document.getElementById(`cell-${cellIndex}`);
+                        if (cell) {
+                            const rect = cell.getBoundingClientRect();
+                            const boardRect = document.getElementById('gameBoard').getBoundingClientRect();
+                            return {
+                                x: rect.left - boardRect.left + (playerNum === 1 ? 5 : 40),
+                                y: rect.top - boardRect.top + (playerNum === 1 ? 5 : 40)
+                            };
+                        }
+                    }
+                }
+            }
+            console.warn(`Cell ${cellIndex} not found`);
+            return { x: 0, y: 0 };
+        }
+        
+        function movePlayer(steps, playerNum) {
+            const oldPosition = playerNum === 1 ? player1Position : player2Position;
+            let newPosition = oldPosition + steps;
+            if (newPosition >= TOTAL_CELLS - 1) {
+                newPosition = TOTAL_CELLS - 1;
+            }
+            
+            movePlayerStepByStep(oldPosition, newPosition, steps, playerNum);
+        }
+        
+        function movePlayerStepByStep(oldPosition, newPosition, steps, playerNum) {
+            isMoving = true;
+            
+            const movingPiece = document.createElement('div');
+            movingPiece.className = `moving-piece moving-player${playerNum}`;
+            movingPiece.innerHTML = playerNum === 1 ? '女' : '男';
+            
+            const startPos = getCellPosition(oldPosition, playerNum);
+            movingPiece.style.position = 'absolute';
+            movingPiece.style.left = `${startPos.x}px`;
+            movingPiece.style.top = `${startPos.y}px`;
+            document.getElementById('gameBoard').appendChild(movingPiece);
+            
+            const currentPlayerPiece = document.querySelector(`.piece-player${playerNum}`);
+            if (currentPlayerPiece) {
+                currentPlayerPiece.style.visibility = 'hidden';
+            }
+            
+            let currentStep = 0;
+            const moveInterval = setInterval(() => {
+                if (currentStep >= steps) {
+                    clearInterval(moveInterval);
+                    movingPiece.remove();
+                    
+                    if (currentPlayerPiece) {
+                        currentPlayerPiece.style.visibility = 'visible';
+                    }
+                    
+                    if (playerNum === 1) {
+                        player1Position = newPosition;
+                    } else {
+                        player2Position = newPosition;
+                    }
+                    
+                    updatePlayerPieces();
+                    updatePlayerInfo();
+                    handleLanding(newPosition, playerNum);
+                    
+                    document.getElementById(`rollBtn${playerNum}`).disabled = false;
+                    
+                    if (newPosition >= TOTAL_CELLS - 1) {
+                        setTimeout(() => {
+                            endGame(playerNum);
+                            isMoving = false;
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            isMoving = false;
+                        }, 1000);
+                    }
+                    return;
+                }
+                const nextPosition = oldPosition + currentStep + 1;
+                const nextPos = getCellPosition(nextPosition, playerNum);
+                movingPiece.style.left = `${nextPos.x}px`;
+                movingPiece.style.top = `${nextPos.y}px`;
+                currentStep++;
+            }, 300);
+        }
+        
+        function handleLanding(cellIndex, playerNum) {
+            // 检查角色扮演游戏跳转 - 直接跳转
+            if (cosplayJumps[cellIndex]) {
+                const gameKey = cosplayJumps[cellIndex];
+                const game = cosplayGames[gameKey];
+                window.location.href = game.filename;
+                return;
+            }
+            
+            // 显示普通格子效果
+            showCellEffect(cellIndex);
+        }
+        
+        function updatePlayerPieces() {
+            document.querySelectorAll('.player-piece').forEach(piece => piece.remove());
+            if (player1Position >= 0) {
+                const cell1 = document.getElementById(`cell-${player1Position}`);
+                if (cell1) {
+                    const piece1 = document.createElement('div');
+                    piece1.className = 'player-piece piece-player1';
+                    piece1.innerHTML = '女';
+                    if (player1Position === player2Position) {
+                        piece1.style.left = '2px';
+                        piece1.style.top = '2px';
+                    }
+                    cell1.appendChild(piece1);
+                }
+            }
+            if (player2Position >= 0) {
+                const cell2 = document.getElementById(`cell-${player2Position}`);
+                if (cell2) {
+                    const piece2 = document.createElement('div');
+                    piece2.className = 'player-piece piece-player2';
+                    piece2.innerHTML = '男';
+                    if (player1Position === player2Position) {
+                        piece2.style.right = '2px';
+                        piece2.style.bottom = '2px';
+                    }
+                    cell2.appendChild(piece2);
+                }
+            }
+        }
+        
+        function updatePlayerInfo() {
+            document.getElementById('player1Position').textContent = 
+                player1Position === 0 ? '起点' : 
+                player1Position >= TOTAL_CELLS - 1 ? '终点' : `第${player1Position + 1}格`;
+            document.getElementById('player2Position').textContent = 
+                player2Position === 0 ? '起点' : 
+                player2Position >= TOTAL_CELLS - 1 ? '终点' : `第${player2Position + 1}格`;
+        }
+        
+        function endGame(winner) {
+            gameEnded = true;
+            const winnerName = winner === 1 ? '女朋友' : '男朋友';
+            document.getElementById('popupTitle').textContent = '游戏结束！';
+            document.getElementById('popupContent').textContent = `${winnerName} 赢得了今晚的主宰权！🎉`;
+            document.getElementById('popupOverlay').style.display = 'block';
+            document.getElementById('effectPopup').style.display = 'block';
+            const winnerPiece = document.querySelector(`.piece-player${winner}`);
+            if (winnerPiece) {
+                winnerPiece.classList.add('victory');
+            }
+            document.getElementById('rollBtn1').disabled = true;
+            document.getElementById('rollBtn2').disabled = true;
+        }
+        
+        function loadSavedCellEffects() {
+            const saved = localStorage.getItem('flyingChessCellEffects_v3');
+            if (saved) {
+                cellEffects = JSON.parse(saved);
+            }
+        }
         
         // 初始化游戏
         function initGame() {
@@ -2499,6 +2330,8 @@
             document.getElementById('rollBtn2').addEventListener('click', () => rollDice(2));
             document.getElementById('dice2').addEventListener('click', () => rollDice(2));
             
+            // 编辑和传送按钮
+            document.getElementById('editControl').addEventListener('click', openEditPanel);
             document.getElementById('teleportControl').addEventListener('click', openTeleportPanel);
             
             document.querySelectorAll('.close-popup').forEach(btn => btn.addEventListener('click', closePopup));
@@ -2513,7 +2346,12 @@
                 });
             });
             
-            document.getElementById('editControl').addEventListener('click', openEditPanel);
+            // 传送面板回车键
+            document.getElementById('teleportInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    executeTeleport();
+                }
+            });
         }
         
         window.onload = initGame;
